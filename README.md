@@ -28,7 +28,14 @@ source devel/setup.bash
 
 ## Multiple modes
 There are multiple conversion modes:
+* laser_scan
+* point_cloud
+* individual_ranges : 8 topics, 1 range per topic
+* sequential_ranges : 1 topic, 8 ranges per topic
 
 ```
 rosrun teraranger_array_converter teraranger_array_converter _converter_mode:=<laser_scan>|<point_cloud>|<individual_ranges>|<sequential_ranges>
 ```
+
+## Requirements
+ATTENTION : To be able to convert toward laser_scan and point_cloud, you need to have transforms setup up correctly. The easiest is to use URDF xacros defined in the teraranger_description package (COMING SOON)
