@@ -1,0 +1,46 @@
+<launch>
+
+  <!-- Laser scan -->
+  <node pkg="rosbag" type="play" name="rosbag_play" args="--clock -l $(find teraranger_array_converter)/bags/two_towers.bag">
+    <remap from="/hub_0/teraranger_hub_one" to="/array_to_fuse_into"/>
+    <remap from="/hub_1/teraranger_hub_one" to="/array_to_be_fused"/>
+  </node>
+
+  <node pkg="teraranger_array_converter" type="teraranger_array_fusion.py" output="screen" name="range_combinator">
+    <param name="sensor_id" value="0" />
+    <!-- <rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+    </rosparam> -->
+  </node>
+
+  <node pkg="teraranger_array_converter" type="teraranger_array_converter.py" name="fused_range_converter">
+    <param name="converter_mode" value="laser_scan" />
+    <!-- <param name="hub_id" value="0" /> -->
+    <remap from="ranges" to="fused_ranges"/>
+    <remap from="scan" to="fused_ranges_scan"/>
+    <!-- <rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+    </rosparam> -->
+  </node>
+
+  <node pkg="teraranger_array_converter" type="teraranger_array_converter.py" name="array_tfi_converter">
+    <param name="converter_mode" value="laser_scan" />
+    <!-- <param name="hub_id" value="0" /> -->
+    <remap from="ranges" to="array_to_fuse_into"/>
+    <remap from="scan" to="tfi_scan"/>
+    <!-- <rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+    </rosparam> -->
+  </node>
+
+  <node pkg="teraranger_array_converter" type="teraranger_array_converter.py" name="array_tbf_converter">
+    <param name="converter_mode" value="point_cloud" />
+    <!-- <param name="hub_id" value="1" /> -->
+    <remap from="ranges" to="array_to_be_fused"/>
+    <remap from="point_cloud" to="tbf_pt_cld"/>
+    <!-- <rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+    </rosparam> -->
+  </node>
+
+</launch>

@@ -1,0 +1,13 @@
+<launch>
+
+  <!-- Laser scan -->
+  <node pkg="teraranger_array" type="teraranger_one" name="teraranger_one_node"/>
+
+  <node pkg="teraranger_array_converter" type="teraranger_array_converter.py" name="teraranger_array_converter">
+    <param name="converter_mode" value="sequential_ranges" />
+    <rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+    </rosparam>
+  </node>
+
+</launch>
