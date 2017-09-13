@@ -41,7 +41,7 @@ rosrun teraranger_array_converter teraranger_array_converter _converter_mode:=<l
 ## Topics
 All these topics are local :
 * Input : /ranges
-* Output : /laser_scan, /point_cloud, /range_0|/range_1.../range_n, /ranges
+* Outputs (depending on the mode): /laser_scan, /point_cloud, /range_0|/range_1.../range_n, /ranges
 
 ## Sensor masking
 You can mask sensor using the "sensor_mask" parameter :
