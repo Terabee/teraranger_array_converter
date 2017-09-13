@@ -27,7 +27,8 @@ source devel/setup.bash
 ```
 
 ## Multiple modes
-There are multiple conversion modes:
+There are multiple conversion modes available for the "converter_mode" parameter:
+
 * laser_scan
 * point_cloud
 * individual_ranges : 8 topics, 1 range per topic
@@ -35,6 +36,19 @@ There are multiple conversion modes:
 
 ```
 rosrun teraranger_array_converter teraranger_array_converter _converter_mode:=<laser_scan>|<point_cloud>|<individual_ranges>|<sequential_ranges>
+```
+
+## Topics
+All these topics are local :
+* Input : /ranges
+* Output : /laser_scan, /point_cloud, /range_0|/range_1.../range_n, /ranges
+
+## Sensor masking
+You can mask sensor using the "sensor_mask" parameter :
+```
+<rosparam>
+      sensor_mask: [true,false,true,false,true,false,true,false]
+</rosparam>
 ```
 
 ## Requirements
