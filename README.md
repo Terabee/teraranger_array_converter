@@ -52,4 +52,4 @@ You can mask sensor using the "sensor_mask" parameter :
 ```
 
 ## Requirements
-ATTENTION : To be able to convert toward laser_scan and point_cloud, you need to have transforms setup up correctly. The easiest is to use URDF xacros defined in the teraranger_description package (COMING SOON)
+WARNING : To be able to convert toward laser_scan and point_cloud, you need to have transforms setup up correctly. The easiest is to use URDF xacros defined in the teraranger_description package (COMING SOON)
