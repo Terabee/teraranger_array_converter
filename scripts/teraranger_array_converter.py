@@ -164,11 +164,18 @@ class TrHubConverter(object):
         # Getting sensor_mask
         try:
             self.sensor_mask = rospy.get_param("~sensor_mask")
-
         except KeyError:
             self.sensor_mask = [True] * self.number_of_sensors
             rospy.logwarn("Private parameter 'sensor_mask' is not set."
                           " All sensors will be used for conversion")
+
+        # Getting conversion frame
+        try:
+            self.conversion_frame = rospy.get_param("~conversion_frame")
+        except KeyError:
+            self.conversion_frame = "base_hub"
+            rospy.logwarn("Private parameter 'conversion_frame' is not set."
+                          " Default value 'base_hub' will be used instead.")
 
         # Creating the right publisher
         if self.mode == "laser_scan":
@@ -237,18 +244,18 @@ class TrHubConverter(object):
 
         if self.mode == "laser_scan":
             if not self.scan_init:
-                self.init_auto_scan(self.tf_buffer, self.data.header.frame_id, self.data)
+                self.init_auto_scan(self.tf_buffer, self.conversion_frame, self.data)
             else:
                 result = auto_build_scan(self.tf_list, self.data,
                                          self.number_of_pos, self.offsets,
-                                         self.data.header.frame_id)
+                                         self.conversion_frame)
                 self.publisher.publish(result)
 
         elif self.mode == "point_cloud":
             if not self.pt_cld_init:
                 self.init_point_cloud(self.tf_buffer, 'base_hub', self.data)
             else:
-                result = to_point_cloud(self.tf_list, self.data, 'base_hub')
+                result = to_point_cloud(self.tf_list, self.data, self.conversion_frame)
                 self.publisher.publish(result)
 
         elif self.mode == "sequential_ranges":
