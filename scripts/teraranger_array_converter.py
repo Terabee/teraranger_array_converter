@@ -246,9 +246,9 @@ class TrHubConverter(object):
 
         elif self.mode == "point_cloud":
             if not self.pt_cld_init:
-                self.init_point_cloud(self.tf_buffer, 'base_link', self.data)
+                self.init_point_cloud(self.tf_buffer, 'base_hub', self.data)
             else:
-                result = to_point_cloud(self.tf_list, self.data, 'base_link')
+                result = to_point_cloud(self.tf_list, self.data, 'base_hub')
                 self.publisher.publish(result)
 
         elif self.mode == "sequential_ranges":
