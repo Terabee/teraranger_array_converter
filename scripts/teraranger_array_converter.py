@@ -268,7 +268,7 @@ class TrHubConverter(object):
 
         elif self.mode == "point_cloud":
             if not self.pt_cld_init:
-                self.init_point_cloud(self.tf_buffer, 'base_hub', self.data)
+                self.init_point_cloud(self.tf_buffer, self.conversion_frame, self.data)
             else:
                 if self.force_tf_refresh:
                     self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
