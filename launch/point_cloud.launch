@@ -1,10 +1,12 @@
 <launch>
 
   <!-- Laser scan -->
-  <node pkg="teraranger_array" type="teraranger_one" name="teraranger_one_node"/>
+  <node pkg="teraranger_array" type="teraranger_one" name="teraranger_one_node" output="screen"/>
 
   <node pkg="teraranger_array_converter" type="teraranger_array_converter.py" name="teraranger_array_converter">
     <param name="converter_mode" value="point_cloud" />
+    <param name="conversion_frame" value="base_hub"/>
+    <param name="force_tf_refresh" value="false"/>
     <rosparam>
       sensor_mask: [true,false,true,false,true,false,true,false]
     </rosparam>

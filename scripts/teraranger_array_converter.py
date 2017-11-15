@@ -179,7 +179,7 @@ class TrHubConverter(object):
 
         # Getting refresh transform parameter
         try:
-            self.force_tf_refresh = rospy.get_param("~force_tf_refresh)
+            self.force_tf_refresh = rospy.get_param("~force_tf_refresh")
             if self.force_tf_refresh:
                 rospy.logwarn("WARNING: The transforms are going to be "
                               "refreshed for each conversion. This may impact "
