@@ -177,6 +177,18 @@ class TrHubConverter(object):
             rospy.logwarn("Private parameter 'conversion_frame' is not set."
                           " Default value 'base_hub' will be used instead.")
 
+        # Getting refresh transform parameter
+        try:
+            self.force_tf_refresh = rospy.get_param("~force_tf_refresh)
+            if self.force_tf_refresh:
+                rospy.logwarn("WARNING: The transforms are going to be "
+                              "refreshed for each conversion. This may impact "
+                              "performance")
+        except KeyError:
+            self.force_tf_refresh = False
+            rospy.logwarn("Private parameter 'force_tf_refresh' is not set."
+                          " Default value 'False' will be used instead.")
+
         # Creating the right publisher
         if self.mode == "laser_scan":
             self.publisher = rospy.Publisher("scan", LaserScan, queue_size=1)
@@ -246,6 +258,9 @@ class TrHubConverter(object):
             if not self.scan_init:
                 self.init_auto_scan(self.tf_buffer, self.conversion_frame, self.data)
             else:
+                if self.force_tf_refresh:
+                    self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
+                                                    self.sensor_mask)
                 result = auto_build_scan(self.tf_list, self.data,
                                          self.number_of_pos, self.offsets,
                                          self.conversion_frame)
@@ -255,6 +270,9 @@ class TrHubConverter(object):
             if not self.pt_cld_init:
                 self.init_point_cloud(self.tf_buffer, 'base_hub', self.data)
             else:
+                if self.force_tf_refresh:
+                    self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
+                                                    self.sensor_mask)
                 result = to_point_cloud(self.tf_list, self.data, self.conversion_frame)
                 self.publisher.publish(result)
 
