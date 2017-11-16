@@ -164,11 +164,30 @@ class TrHubConverter(object):
         # Getting sensor_mask
         try:
             self.sensor_mask = rospy.get_param("~sensor_mask")
-
         except KeyError:
             self.sensor_mask = [True] * self.number_of_sensors
             rospy.logwarn("Private parameter 'sensor_mask' is not set."
                           " All sensors will be used for conversion")
+
+        # Getting conversion frame
+        try:
+            self.conversion_frame = rospy.get_param("~conversion_frame")
+        except KeyError:
+            self.conversion_frame = "base_hub"
+            rospy.logwarn("Private parameter 'conversion_frame' is not set."
+                          " Default value 'base_hub' will be used instead.")
+
+        # Getting refresh transform parameter
+        try:
+            self.force_tf_refresh = rospy.get_param("~force_tf_refresh")
+            if self.force_tf_refresh:
+                rospy.logwarn("WARNING: The transforms are going to be "
+                              "refreshed for each conversion. This may impact "
+                              "performance")
+        except KeyError:
+            self.force_tf_refresh = False
+            rospy.logwarn("Private parameter 'force_tf_refresh' is not set."
+                          " Default value 'False' will be used instead.")
 
         # Creating the right publisher
         if self.mode == "laser_scan":
@@ -237,18 +256,24 @@ class TrHubConverter(object):
 
         if self.mode == "laser_scan":
             if not self.scan_init:
-                self.init_auto_scan(self.tf_buffer, self.data.header.frame_id, self.data)
+                self.init_auto_scan(self.tf_buffer, self.conversion_frame, self.data)
             else:
+                if self.force_tf_refresh:
+                    self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
+                                                    self.sensor_mask)
                 result = auto_build_scan(self.tf_list, self.data,
                                          self.number_of_pos, self.offsets,
-                                         self.data.header.frame_id)
+                                         self.conversion_frame)
                 self.publisher.publish(result)
 
         elif self.mode == "point_cloud":
             if not self.pt_cld_init:
-                self.init_point_cloud(self.tf_buffer, 'base_link', self.data)
+                self.init_point_cloud(self.tf_buffer, self.conversion_frame, self.data)
             else:
-                result = to_point_cloud(self.tf_list, self.data, 'base_link')
+                if self.force_tf_refresh:
+                    self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
+                                                    self.sensor_mask)
+                result = to_point_cloud(self.tf_list, self.data, self.conversion_frame)
                 self.publisher.publish(result)
 
         elif self.mode == "sequential_ranges":
