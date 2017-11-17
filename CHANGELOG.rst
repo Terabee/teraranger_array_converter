@@ -2,8 +2,8 @@
 Changelog for package teraranger_array_converter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.0 (2017-11-17)
+------------------
 * Change license to MIT
 * Update example bags to teraranger_array/RangeArray message type
 * Update launch files with new parameters
