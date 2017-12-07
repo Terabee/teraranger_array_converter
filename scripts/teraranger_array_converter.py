@@ -137,10 +137,10 @@ def check_sensors_converging(tf_list):
     return converging
 
 
-class TrHubConverter(object):
+class TrArrayConverter(object):
 
     def __init__(self):
-        rospy.init_node("tr_hub_converter", anonymous=True)
+        rospy.init_node("range_array_converter", anonymous=True)
 
         # Init of variables
         self.tf_list = []
@@ -310,7 +310,7 @@ class TrHubConverter(object):
 
 
 if __name__ == '__main__':
-    converter = TrHubConverter()
+    converter = TrArrayConverter()
     try:
         converter.run()
     except rospy.ROSInterruptException:
