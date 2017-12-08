@@ -2,8 +2,8 @@
 Changelog for package teraranger_array_converter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.1.1 (2017-12-08)
+------------------
 * Correct classname and node name
 * Add auto-namespacing of default conversion_frame
 * Contributors: Pierre-Louis Kabaradjian
