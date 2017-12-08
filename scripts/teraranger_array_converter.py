@@ -137,10 +137,10 @@ def check_sensors_converging(tf_list):
     return converging
 
 
-class TrHubConverter(object):
+class TrArrayConverter(object):
 
     def __init__(self):
-        rospy.init_node("tr_hub_converter", anonymous=True)
+        rospy.init_node("range_array_converter", anonymous=True)
 
         # Init of variables
         self.tf_list = []
@@ -150,6 +150,17 @@ class TrHubConverter(object):
         self.pt_cld_init = False
         self.number_of_sensors = 8
         self.publishers = []
+
+        try:
+            ns = rospy.get_namespace()
+            if isinstance(ns, str):
+                sep = '/'
+                self.ns_prefix = sep.join([x for x in (ns).split(sep) if len(x) > 0])
+            else:
+                rospy.logwarn("Error when fetching namespace, pefix \"\" will be used instead")
+        except KeyError:
+            self.ns_prefix = ""
+            rospy.logwarn("Error when fetching namespace, pefix \"\" will be used instead")
 
         # Getting mode param
         try:
@@ -172,10 +183,14 @@ class TrHubConverter(object):
         # Getting conversion frame
         try:
             self.conversion_frame = rospy.get_param("~conversion_frame")
+            rospy.logwarn("By specifying the conversion frame you will override the automatic namespacing of the conversion_frame")
         except KeyError:
-            self.conversion_frame = "base_hub"
+            if self.ns_prefix != "":
+                self.conversion_frame = "base_" + self.ns_prefix
+            else:
+                self.conversion_frame = "base_hub"
             rospy.logwarn("Private parameter 'conversion_frame' is not set."
-                          " Default value 'base_hub' will be used instead.")
+                          " Default value 'base + _<namespace>' will be used instead.")
 
         # Getting refresh transform parameter
         try:
@@ -295,7 +310,7 @@ class TrHubConverter(object):
 
 
 if __name__ == '__main__':
-    converter = TrHubConverter()
+    converter = TrArrayConverter()
     try:
         converter.run()
     except rospy.ROSInterruptException:
