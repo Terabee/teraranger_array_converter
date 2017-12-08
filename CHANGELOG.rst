@@ -2,6 +2,12 @@
 Changelog for package teraranger_array_converter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct classname and node name
+* Add auto-namespacing of default conversion_frame
+* Contributors: Pierre-Louis Kabaradjian
+
 1.1.0 (2017-11-17)
 ------------------
 * Change license to MIT
