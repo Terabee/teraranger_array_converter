@@ -13,7 +13,7 @@ from teraranger_array.msg import RangeArray
 from conversion_tools import *
 
 
-def to_point_cloud(tf_list, rng_array, target_frame):
+def to_point_cloud(tf_list, rng_array, target_frame, allow_nans):
     # Initializing output structure
     header = Header()
     header.frame_id = target_frame
@@ -33,7 +33,10 @@ def to_point_cloud(tf_list, rng_array, target_frame):
             y = 0
             z = 0
         else:
-            continue  # Skip out of range point
+            if allow_nans:
+                points.append((float("nan"), float("nan"), float("nan")))
+            continue
+            # Skip out of range point
 
         # Transforming the point to the target_frame
         if trans is not None:
@@ -204,6 +207,16 @@ class TrArrayConverter(object):
             rospy.logwarn("Private parameter 'force_tf_refresh' is not set."
                           " Default value 'False' will be used instead.")
 
+        # Getting allow_nans_in_point_cloud param
+        try:
+            self.allow_nans = rospy.get_param("~allow_nans_in_point_cloud")
+            if self.allow_nans:
+                rospy.logwarn("WARNING: Nan range values will be passed in point clouds")
+        except KeyError:
+            self.allow_nans = False
+            rospy.logwarn("Private parameter 'allow_nans_in_point_cloud' is not set."
+                          " Default value 'False' will be used instead.")
+
         # Creating the right publisher
         if self.mode == "laser_scan":
             self.publisher = rospy.Publisher("scan", LaserScan, queue_size=1)
@@ -288,7 +301,7 @@ class TrArrayConverter(object):
                 if self.force_tf_refresh:
                     self.tf_list = gather_sensor_tf(self.tf_buffer, self.conversion_frame, self.data,
                                                     self.sensor_mask)
-                result = to_point_cloud(self.tf_list, self.data, self.conversion_frame)
+                result = to_point_cloud(self.tf_list, self.data, self.conversion_frame, self.allow_nans)
                 self.publisher.publish(result)
 
         elif self.mode == "sequential_ranges":
